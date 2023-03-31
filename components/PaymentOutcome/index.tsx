@@ -44,7 +44,7 @@ function PaymentOutcome({ paymentRequest, paymentAmount, dispatch }: Props) {
         width="18"
         height="18"
       />
-      Back to cash register
+      돌아가기
     </button>
   )
 
@@ -65,17 +65,14 @@ function PaymentOutcome({ paymentRequest, paymentAmount, dispatch }: Props) {
               height="104"
             />
             <p className={styles.text}>
-              The invoice of{" "}
-              {unit === "SAT"
+              {/* {unit === "SAT"
                 ? `${formatOperand(
                     paymentAmount?.toString(),
-                  )} sats (~ ${usdValueInSatUnit})`
-                : ` $${formatOperand(
-                    amount?.toString() ?? satsToUsd(Number(paymentAmount)).toFixed(2),
-                  )} (~${formatOperand(
+                  )} 사토시`
+                : `${formatOperand(
                     sats?.toString() ?? Number(paymentAmount).toFixed(),
-                  )} sats)`}{" "}
-              has been paid
+                  )} 사토시`}{" "} */}
+              결제 완료
             </p>
           </div>
           {backToCashRegisterButton}
@@ -92,8 +89,11 @@ function PaymentOutcome({ paymentRequest, paymentAmount, dispatch }: Props) {
               width="104"
               height="104"
             />
-            <p className={styles.text}>
+            {/* <p className={styles.text}>
               Please try again. Either the invoice has expired or it hasn’t been paid.
+            </p> */}
+            <p className={styles.text}>
+              다시 시도해주세요. 인보이스가 만료됐습니다.
             </p>
           </div>
           {backToCashRegisterButton}

@@ -30,9 +30,29 @@ interface Props {
 
 const USD_MAX_INVOICE_TIME = "5.00"
 
+async function getKRWCurrency() {
+  const apiUrl = 'https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD';
+  return fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      const usd_krwp:number = data[0].basePrice *1;
+      return usd_krwp;
+    })
+    .catch(error => {
+      console.error('Error fetching KRW currency rate: ', error);
+    })
+}
+
 function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: Props) {
   const { username, amount, unit, sats, memo } = useRouter().query
   const { usdToSats, satsToUsd } = useSatPrice()
+
+  const [krwCurrency, setKRWCurrency] = React.useState<number>(0);
+  getKRWCurrency().then(a=>{
+    if(krwCurrency == 0) {
+      if(a!=undefined) setKRWCurrency(a*1);
+    }
+  })
 
   const [expiredInvoiceError, setExpiredInvoiceError] = React.useState<string>("")
   const [copied, setCopied] = React.useState<boolean>(false)
@@ -47,14 +67,14 @@ function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: 
     !amount && !unit && !memo
       ? `https://${URL_HOST_DOMAIN}/${username}?amount=${
           state.currentAmount
-        }&sats=${usdToSats(
+        }&sats=${(usdToSats(
           state.currentAmount,
-        ).toFixed()}&currency=${recipientWalletCurrency}&unit=SAT&memo=""`
+        )/ krwCurrency).toFixed()}&currency=${recipientWalletCurrency}&unit=SAT&memo=""`
       : window.location.href
 
   const shareData = {
     title: `Pay ${username}`,
-    text: `Use the link embedded below to pay ${username} some sats. Powered by: https://galoy.io`,
+    text: `${username} 에게 비트코인을 보냅니다. Powered by: 야나부, galoy`,
     url: shareUrl,
   }
 
@@ -83,7 +103,7 @@ function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: 
 
   const paymentAmount = React.useMemo(() => {
     const finalReturnValue =
-      recipientWalletCurrency === "USD" ? Number(amount) * 100 : usdToSats(Number(amount))
+      recipientWalletCurrency === "USD" ? Number(amount) * 100 : usdToSats(Number(amount))/krwCurrency
     if (amount === "0.00" || isNaN(Number(amount))) {
       if ((!unit || !amount || !sats) && recipientWalletCurrency === "USD") {
         return (Number(state.currentAmount) * 100).toString()
@@ -94,7 +114,7 @@ function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: 
         }
         return sats
       } else if (Number(state.currentAmount) > 0) {
-        return usdToSats(Number(state.currentAmount)).toFixed(2)
+        return (usdToSats(Number(state.currentAmount))/krwCurrency).toFixed(2)
       }
     }
 
