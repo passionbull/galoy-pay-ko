@@ -30,6 +30,21 @@ interface UpdateAmount {
 export enum AmountUnit {
   Sat = "SAT",
   Cent = "CENT",
+  KRW = "원"
+}
+
+
+async function getKRWCurrency() {
+  const apiUrl = 'https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD';
+  return fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      const usd_krwp:number = data[0].basePrice *1;
+      return usd_krwp;
+    })
+    .catch(error => {
+      console.error('Error fetching KRW currency rate: ', error);
+    })
 }
 
 function ParsePayment({ defaultWalletCurrency, walletId, dispatch, state }: Props) {
@@ -37,13 +52,32 @@ function ParsePayment({ defaultWalletCurrency, walletId, dispatch, state }: Prop
   const router = useRouter()
   const { username, amount, sats, unit, memo } = router.query
 
-  const value = usdToSats(Number(state.currentAmount)).toFixed()
+  // const value = usdToSats(Number(state.currentAmount)).toFixed()
+
+
+  const [krwCurrency, setKRWCurrency] = React.useState<number>(0);
+  getKRWCurrency().then(a=>{
+    if(krwCurrency == 0) {
+      if(a!=undefined) setKRWCurrency(a*1);
+    }
+  })
+  const value = (usdToSats(Number(state.currentAmount))  / krwCurrency).toFixed()
+
+
+  const calcKRWOrWONAmount =
+  usdToSats(Number(sats))  / krwCurrency < 0.01 || isNaN(usdToSats(Number(sats))  / krwCurrency)
+    ? "1sats 이상 입력해주세요."
+    : (satsToUsd(Number(sats)) * krwCurrency).toFixed(2) +" 원"
+
 
   const calcUsdOrCentAmount =
     satsToUsd(Number(sats)) < 0.01 || isNaN(satsToUsd(Number(sats)))
       ? "(less than 1 cent)"
       : satsToUsd(Number(sats)).toFixed(2)
 
+  const valueInKRW = `${
+    unit === AmountUnit.Sat ? calcKRWOrWONAmount : formatOperand(state.currentAmount)
+  }`
   const valueInUSD = `$ ${
     unit === AmountUnit.Sat ? calcUsdOrCentAmount : formatOperand(state.currentAmount)
   }`
@@ -95,17 +129,19 @@ function ParsePayment({ defaultWalletCurrency, walletId, dispatch, state }: Prop
     )
   }
 
+
   // Update Params From Current Amount
   React.useEffect(() => {
     if (!unit) return
+
     const amount =
       unit === AmountUnit.Sat
-        ? satsToUsd(state.currentAmount).toFixed(2)
+        ? (satsToUsd(state.currentAmount)*krwCurrency).toFixed(2)
         : state.currentAmount
     const sats =
       unit === AmountUnit.Sat
         ? state.currentAmount
-        : usdToSats(Number(state.currentAmount)).toFixed()
+        : (usdToSats(Number(state.currentAmount)) / krwCurrency).toFixed()
 
     router.push(
       {
@@ -130,7 +166,7 @@ function ParsePayment({ defaultWalletCurrency, walletId, dispatch, state }: Prop
     if (unit === AmountUnit.Cent) {
       dispatch({
         type: ACTIONS.SET_AMOUNT_FROM_PARAMS,
-        payload: satsToUsd(state.currentAmount).toFixed(2).toString(),
+        payload: (satsToUsd(state.currentAmount)*krwCurrency).toFixed(2).toString(),
       })
     }
     if (unit === AmountUnit.Sat) {
@@ -158,25 +194,25 @@ function ParsePayment({ defaultWalletCurrency, walletId, dispatch, state }: Prop
   return (
     <Container className={styles.digits_container}>
       <div className={styles.output}>
-        {!state.createdInvoice && !isRunningStandalone() && (
+        {/* {!state.createdInvoice && !isRunningStandalone() && (
           <button
             onClick={() => {
-              dispatch({
-                type: ACTIONS.PINNED_TO_HOMESCREEN_MODAL_VISIBLE,
-                payload: !state.pinnedToHomeScreenModalVisible,
-              })
+              // dispatch({
+              //   type: ACTIONS.PINNED_TO_HOMESCREEN_MODAL_VISIBLE,
+              //   payload: !state.pinnedToHomeScreenModalVisible,
+              // })
             }}
             className={styles.pin_btn}
           >
             <Image src="/icons/pin-icon.svg" alt="pin icon" className={styles.pin_icon} />
           </button>
-        )}
+        )} */}
         <div
           className={`${
             !unit || unit === AmountUnit.Cent ? styles.zero_order : styles.first_order
           }`}
         >
-          {valueInUSD}
+          {valueInKRW}
         </div>
         <div
           className={`${unit === AmountUnit.Sat ? styles.zero_order : styles.first_order}
@@ -271,6 +307,11 @@ function ParsePayment({ defaultWalletCurrency, walletId, dispatch, state }: Prop
           </button>
         )}
       </div>
+      <div className={styles.output}>
+        <div>비트코인 가격: {(satsToUsd(100000000)*krwCurrency).toLocaleString('en-US')}원 (${satsToUsd(100000000).toLocaleString('en-US')})</div>
+        <div>1,000 sats: {(satsToUsd(1000)*krwCurrency).toLocaleString('en-US')}원</div>
+      </div>
+      
     </Container>
   )
 }

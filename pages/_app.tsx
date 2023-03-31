@@ -44,7 +44,7 @@ export default function Layout({
     `,
           }}
         />
-        <title>BitcoinBeach Cash Register</title>
+        <title>한국 비트코인 POS</title>
       </Head>
       <GraphQLProvider>
         <AppLayout username={username}>

@@ -167,6 +167,10 @@
   background-color: rgba(83, 111, 242, 0.2);
 }
 
+.span_1{
+  margin-left: 0.5rem;
+}
+
 .footer {
   display: flex;
   justify-content: center;

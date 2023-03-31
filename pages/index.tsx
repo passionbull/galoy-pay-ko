@@ -45,7 +45,7 @@ function Home() {
       <br />
       <Row>
         <Col>
-          <h2>Connect to the Bitcoin Beach Lightning Node</h2>
+          <h2>결제 후 비트코인 전송 받을 주소 입력</h2>
           <br />
           <Jumbotron>
             <Container>
@@ -71,7 +71,7 @@ function Home() {
                             "Loading..."
                           ) : (
                             <a href={nodeUrl + `${data.globals.nodesIds[0]}`}>
-                              Connect the Bitcoin Beach Lightning node
+                              라이트닝 노드 정보
                             </a>
                           )}
                         </ListGroup.Item>
@@ -84,8 +84,7 @@ function Home() {
                             }
                           >
                             <label htmlFor="username">
-                              To use the <strong>POS</strong> app, enter your bitcoin
-                              beach username
+                               <strong>POS</strong> 결제를 위해, Beach wallet 비트코인 라이트닝 주소를 입력해주세요. (username@pay.bbw.sv)
                             </label>
                             <input
                               type="text"
@@ -94,10 +93,10 @@ function Home() {
                               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                                 setUsername(event.target.value)
                               }
-                              placeholder="username"
+                              placeholder="username을 입력하세요."
                               required
                             />
-                            <button>Submit</button>
+                            <button>입력</button>
                           </form>
                         </ListGroup.Item>
                       </ListGroup>

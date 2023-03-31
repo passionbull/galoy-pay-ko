@@ -12,6 +12,9 @@ import reducer, { ACTIONS } from "./_reducer"
 import styles from "./_user.module.css"
 import Head from "next/head"
 
+
+
+
 function ReceivePayment() {
   const router = useRouter()
   const { username, memo } = router.query
@@ -51,6 +54,7 @@ function ReceivePayment() {
     dispatch({ type: ACTIONS.UPDATE_USERNAME, payload: username })
   }, [state, username, data])
 
+
   return (
     <Container className={styles.payment_container}>
       <Head>
@@ -63,8 +67,8 @@ function ReceivePayment() {
       {usernameError ? (
         <div className={styles.error}>
           <p>{`${usernameError.message}.`}</p>
-          <p>Please check the username in your browser URL and try again.</p>
-          <Link href={"/setuppwa"}>
+          <p>비트코인 비치월렛의 유저이름을 입력해주세요.</p>
+          <Link href={"/"}>
             <a onClick={() => localStorage.removeItem("username")}>Back</a>
           </Link>
         </div>
@@ -85,7 +89,7 @@ function ReceivePayment() {
                 />
               </button>
             )}
-            <p className={styles.username}>{`Pay ${username}`}</p>
+            {/* <p>{`${accountUsername.toLowerCase()}@pay.bbw.sv 계정으로 전송됩니다.`}</p> */}
           </div>
           {/* {memo && <p className={styles.memo}>{`Memo: ${memo}`}</p>} */}
 
