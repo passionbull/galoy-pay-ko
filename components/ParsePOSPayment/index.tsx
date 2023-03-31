@@ -66,8 +66,8 @@ function ParsePayment({ defaultWalletCurrency, walletId, dispatch, state }: Prop
 
   const calcKRWOrWONAmount =
   usdToSats(Number(sats))  / krwCurrency < 0.01 || isNaN(usdToSats(Number(sats))  / krwCurrency)
-    ? "1sats 이상 입력해주세요."
-    : (satsToUsd(Number(sats)) * krwCurrency).toFixed(2) +" 원"
+    ? "0"
+    : (satsToUsd(Number(sats)) * krwCurrency).toFixed(2)
 
 
   const calcUsdOrCentAmount =
@@ -77,7 +77,7 @@ function ParsePayment({ defaultWalletCurrency, walletId, dispatch, state }: Prop
 
   const valueInKRW = `${
     unit === AmountUnit.Sat ? calcKRWOrWONAmount : formatOperand(state.currentAmount)
-  }`
+  } 원`
   const valueInUSD = `$ ${
     unit === AmountUnit.Sat ? calcUsdOrCentAmount : formatOperand(state.currentAmount)
   }`
