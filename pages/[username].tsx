@@ -5,6 +5,7 @@ import Container from "react-bootstrap/Container"
 import Image from "react-bootstrap/Image"
 
 import { useQuery } from "@galoymoney/client"
+import useSatPrice from "../lib/use-sat-price"
 
 import ParsePayment from "../components/ParsePOSPayment"
 import PinToHomescreen from "../components/PinToHomescreen"
@@ -18,6 +19,7 @@ import Head from "next/head"
 function ReceivePayment() {
   const router = useRouter()
   const { username, memo } = router.query
+  const { usdToSats, satsToUsd } = useSatPrice()
 
   let accountUsername: string
   if (username == undefined) {
@@ -44,6 +46,8 @@ function ReceivePayment() {
   })
 
   React.useEffect(() => {
+    let usd_string = satsToUsd(100000000);
+    console.log('usd_string', usd_string);
     if (state.walletCurrency === data?.accountDefaultWallet.walletCurrency) {
       return
     }

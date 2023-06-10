@@ -129,12 +129,10 @@ if (nostrEnabled) {
 }
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-  console.log(NOSTR_PUBKEY)
 
   const { username, amount, nostr } = req.query
   const url = originalUrl(req)
   const accountUsername = username ? username.toString() : ""
-
   const walletId = await getUserWalletId(accountUsername, req)
   if (!walletId) {
     return res.json({

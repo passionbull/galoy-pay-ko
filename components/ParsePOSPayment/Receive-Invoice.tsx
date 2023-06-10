@@ -138,7 +138,6 @@ function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: 
 
   React.useEffect(() => {
     if (!walletId || !Number(paymentAmount)) return
-
     createInvoice({
       variables: {
         input: {
@@ -256,7 +255,7 @@ function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: 
               <QRCode
                 value={invoice?.paymentRequest}
                 size={320}
-                logoImage="/BBW-QRLOGO.png"
+                logoImage="/profile.jpeg"
                 logoWidth={100}
               />
             </div>
