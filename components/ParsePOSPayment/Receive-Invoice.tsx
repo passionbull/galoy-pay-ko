@@ -190,8 +190,8 @@ function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: 
   const readNFC = async () =>{
     if ("NDEFReader" in window) {
       try {
-          const window_:any = window;
-          const ndef = new window_.NDEFReader();
+          let window_:any = window;
+          let ndef = new window_.NDEFReader();
           await ndef.scan();
 
           console.log("Scan started successfully.");
