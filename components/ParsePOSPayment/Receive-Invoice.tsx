@@ -21,7 +21,6 @@ import PaymentOutcome from "../PaymentOutcome"
 import { Share } from "../Share"
 import styles from "./parse-payment.module.css"
 
-
 interface Props {
   recipientWalletCurrency?: string
   walletId: string | undefined
@@ -187,28 +186,6 @@ function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: 
   const OS = getOS()
   const deviceDetails = window.navigator.userAgent
 
-  const readNFC = async () =>{
-    if ("NDEFReader" in window) {
-      try {
-          let window_:any = window;
-          let ndef = new window_.NDEFReader();
-          await ndef.scan();
-
-          console.log("Scan started successfully.");
-          ndef.onreadingerror = () => {
-              console.log("Cannot read data from the NFC tag. Try another one?");
-          };
-
-          ndef.onreading = (event: any) => {
-              console.log("NDEF message read.", event);
-              // onReading(event); //Find function below
-          };
-      } catch (error) {
-          console.log(`Error! Scan failed to start: ${error}.`);
-      }
-    }
-  }
-
   const isMobileDevice = (): boolean => {
     // check if device is being used on the web or mobile
     const mobileDevice = /android|iPhone|iPod|kindle|HMSCore|windows phone|ipad/i
@@ -282,12 +259,7 @@ function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: 
                 logoWidth={100}
               />
             </div>
-
-            <Button className={styles.pay_with_wallet} onClick={() => {readNFC()}}> 
-              볼트카드 결제하기</Button>
-
-
-            {/* <Button
+            <Button
               className={styles.pay_with_wallet}
               onClick={() => {
                 !isMobileDevice() && setOpenModal(true)
@@ -298,7 +270,7 @@ function ReceiveInvoice({ recipientWalletCurrency, walletId, state, dispatch }: 
               ) : (
                 "Pay in wallet"
               )}
-            </Button> */}
+            </Button>
             <div className={styles.qr_clipboard}>
               <OverlayTrigger
                 show={copied}
