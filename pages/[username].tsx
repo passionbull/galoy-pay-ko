@@ -46,7 +46,7 @@ function ReceivePayment() {
   })
 
   React.useEffect(() => {
-    let usd_string = satsToUsd(100000000);
+    const usd_string = satsToUsd(100000000);
     console.log('usd_string', usd_string);
     if (state.walletCurrency === data?.accountDefaultWallet.walletCurrency) {
       return
